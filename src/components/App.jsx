@@ -17,7 +17,7 @@ export default () => {
   return (
     <div>
       <Main>
-        <VideoPlayer />
+        <VideoPlayer videoId="4y33h81phKU" />
         <Menu />
       </Main>
     </div>

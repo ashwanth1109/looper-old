@@ -18,20 +18,74 @@ const Container = styled.div`
 `;
 
 let loadYT;
-const VideoPlayer = () => {
+const VideoPlayer = ({ videoId }) => {
+  // Initialization
+  let player = null;
   const playerRef = useRef(null);
   const [loading, setLoading] = useState(true);
 
+  // useNodeSize() - to get dimensions of VideoPlayer Container
   const { setRef, rectValues } = useNodeSize();
   const { width, height } = rectValues || {};
-  console.log('Node Dimensions:', width, height);
-  useEffect(() => {}, []);
 
-  // let currentLoop;
-  // const [loops, setLoops] = useState({});
-  // const [startLoopTime, setStartLoop] = useState(0);
-  // let player;
-  // useEffect(() => {
+  useEffect(() => {
+    if (!loadYT && width && height) {
+      loadYT = new Promise(resolve => {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+      });
+
+      let done = false;
+      const stopVideo = () => {
+        player.stopVideo();
+      };
+
+      const onPlayerStateChange = e => {
+        if (e.data === YT.PlayerState.ENDED) {
+          player.seekTo(0);
+          e.target.playVideo();
+        }
+      };
+
+      const onPlayerReady = e => {
+        setLoading(false);
+      };
+
+      loadYT.then(YT => {
+        player = new YT.Player(playerRef.current, {
+          height,
+          width,
+          videoId,
+          rel: 0,
+          events: {
+            onStateChange: onPlayerStateChange,
+            onReady: onPlayerReady
+          },
+          iv_load_policy: 0
+        });
+      });
+    }
+  }, [width, height]);
+
+  return (
+    <Container ref={setRef}>
+      {loading ? <Loader /> : null}
+      <div ref={playerRef} />
+    </Container>
+  );
+};
+
+export default VideoPlayer;
+
+/** CODE GRAVEYARD:
+ * // let currentLoop;
+ // const [loops, setLoops] = useState({});
+ // const [startLoopTime, setStartLoop] = useState(0);
+ // let player;
+ // useEffect(() => {
   //   if (!loadYT) {
   //     loadYT = new Promise(resolve => {
   //       const tag = document.createElement('script');
@@ -76,36 +130,20 @@ const VideoPlayer = () => {
   //     });
   //   });
   // }, []);
-  //
-  // const startLoopClicked = () => {
+ //
+ // const startLoopClicked = () => {
   //   console.log(player.getCurrentTime());
   //   setStartLoop(player.getCurrentTime());
   // };
-  //
-  // const stopLoopClicked = () => {};
+ //
+ // const stopLoopClicked = () => {};
 
-  // return (
-  //   <>
-  //     <h1>Looper POC</h1>
-  //     <div ref={playerRef}></div>
-  //     <button onClick={startLoopClicked}>Start Loop</button>
-  //     <button>Stop Loop</button>
-  //   </>
-  // );
-
-  if (loading) {
-    return (
-      <Container>
-        <Loader />
-      </Container>
-    );
-  }
-
-  return (
-    <Container ref={setRef}>
-      <div ref={playerRef} />
-    </Container>
-  );
-};
-
-export default VideoPlayer;
+ // return (
+ //   <>
+ //     <h1>Looper POC</h1>
+ //     <div ref={playerRef}></div>
+ //     <button onClick={startLoopClicked}>Start Loop</button>
+ //     <button>Stop Loop</button>
+ //   </>
+ // );
+ * */
