@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { overlay } from '../../colors';
+import { highlight, overlay } from '../../colors';
 import Icon from '../Icon';
 
 const Container = styled.div`
@@ -12,12 +12,18 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin: 8px;
-  border: 1px solid #ffffff40;
+  border: 1px solid ${highlight};
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.45s ease-in-out background-color;
+  :hover {
+    background-color: ${highlight};
+  }
 `;
 
-const Item = ({ item }) => {
+const Item = ({ item, handleClick }) => {
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <Icon name={item} />
     </Container>
   );
