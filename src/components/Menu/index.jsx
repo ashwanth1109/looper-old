@@ -15,7 +15,7 @@ const MenuOverlay = styled.div`
   width: 110px;
   position: absolute;
   top: 0;
-  z-index: 1;
+  z-index: 100;
 `;
 
 const items = [
@@ -28,11 +28,21 @@ const items = [
   'exercise'
 ];
 
-const Menu = () => {
+const Menu = ({ setPlaybackRate }) => {
   const [showSlider, setShowSlider] = useState(false);
   const [current, setCurrent] = useState(null);
 
   const handleClick = useCallback(item => {
+    switch (item) {
+      case 'increase':
+        setPlaybackRate(prev => prev + 0.05);
+        break;
+      case 'decrease':
+        setPlaybackRate(prev => prev - 0.05);
+        break;
+      default:
+        break;
+    }
     setShowSlider(prev => !prev);
     setCurrent(item);
   }, []);

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled from '@emotion/styled';
-import useNodeSize from 'react-node-size';
+import useClientDimensions from 'react-client-dimensions';
+
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 
@@ -9,10 +10,8 @@ import Loader from '../Common/Loader';
 import Loop from '../../classes/Loop';
 
 const Container = styled.div`
-  flex: 1;
-  height: calc((9 / 16) * 100vw);
-  max-height: calc(100vh - 200px);
-  min-height: 480px;
+  width: 100vw;
+  height: 100vh;
   background-color: ${overlay};
   display: flex;
   align-items: center;
@@ -29,14 +28,13 @@ const selectPlayerVars = createSelector(
 let player = null;
 let YTInstance = null;
 
-const VideoPlayer = ({ videoId }) => {
+const VideoPlayer = ({ videoId, playbackRate }) => {
   // Initialization
   const playerRef = useRef(null);
   const [loading, setLoading] = useState(true);
 
   // useNodeSize() - to get dimensions of VideoPlayer Container
-  const { setRef, rectValues } = useNodeSize();
-  const { width, height } = rectValues || {};
+  const { vw, vh } = useClientDimensions();
 
   const playerVars = useSelector(selectPlayerVars);
 
@@ -51,7 +49,13 @@ const VideoPlayer = ({ videoId }) => {
   );
 
   useEffect(() => {
-    if (!loadYT && width && height) {
+    if (player) {
+      player.setPlaybackRate(playbackRate);
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
+    if (!loadYT && vw && vh) {
       loadYT = new Promise(resolve => {
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
@@ -72,10 +76,16 @@ const VideoPlayer = ({ videoId }) => {
       loadYT.then(YT => {
         YTInstance = YT;
         player = new YT.Player(playerRef.current, {
-          height,
-          width,
+          height: vh,
+          width: vw,
           videoId,
-          rel: 0,
+          disablekb: 0,
+          modestbranding: 1,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            rel: 0
+          },
           events: {
             onStateChange: onPlayerStateChange,
             onReady: onPlayerReady
@@ -84,6 +94,7 @@ const VideoPlayer = ({ videoId }) => {
         });
       });
     } else if (player) {
+      player.setPlaybackRate(playbackRate);
       player.removeEventListener('onStateChange', onPlayerStateChange);
       player.addEventListener('onStateChange', onPlayerStateChange);
       player.loadVideoById({
@@ -92,10 +103,10 @@ const VideoPlayer = ({ videoId }) => {
         endSeconds: playerVars.end
       });
     }
-  }, [width, height, playerVars, videoId]);
+  }, [vw, vh, playerVars, videoId]);
 
   return (
-    <Container ref={setRef}>
+    <Container>
       {loading ? <Loader /> : null}
       <div ref={playerRef} />
     </Container>

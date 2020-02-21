@@ -1,19 +1,27 @@
 import React, { useState, useRef } from 'react';
 import styled from '@emotion/styled';
 
-import useClientDimensions from 'react-client-dimensions';
-
 import VideoPlayer from './VideoPlayer';
 import Menu from './Menu';
+import { useSelector } from 'react-redux';
+import Icon from './Icon';
+import { overlay, darkOverlay } from '../colors';
 
-const Main = styled.div`
-  display: flex;
+const LogoContainer = styled.div`
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  background-color: ${overlay};
+  border-radius: 16px;
+  cursor: pointer;
 `;
-
 const SearchContainer = styled.div`
+  width: 100vw;
+  position: absolute;
+  top: 0;
   display: flex;
-  margin: 16px;
   padding: 32px;
+  background: ${darkOverlay};
 `;
 
 const SearchInput = styled.input`
@@ -38,16 +46,14 @@ const Button = styled.button`
 
 export default () => {
   const inputRef = useRef(null);
-  const { vw, vh } = useClientDimensions();
   const [videoId, setVideoId] = useState(null);
+  const [playbackRate, setPlaybackRate] = useState(0.5);
   console.log('VideoId:', videoId);
 
   return (
     <div>
-      <Main>
-        <VideoPlayer videoId={videoId} />
-        <Menu />
-      </Main>
+      <VideoPlayer videoId={videoId} playbackRate={playbackRate} />
+      {/*<Menu setPlaybackRate={setPlaybackRate} />*/}
       <SearchContainer>
         <SearchInput ref={inputRef} />
         <Button
@@ -56,6 +62,9 @@ export default () => {
           Search
         </Button>
       </SearchContainer>
+      <LogoContainer>
+        <Icon name="logo" />
+      </LogoContainer>
     </div>
   );
 };

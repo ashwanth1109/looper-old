@@ -1,28 +1,31 @@
-import React from 'react';
-import Loop from './Loop';
-import Metronome from './Metronome';
-import Sheet from './Sheet';
-import Scales from './Scales';
-import Exercise from './Exercise';
-import Increase from './Increase';
-import Decrease from './Decrease';
+import React from "react";
+import Loop from "./Loop";
+import Metronome from "./Metronome";
+import Sheet from "./Sheet";
+import Scales from "./Scales";
+import Exercise from "./Exercise";
+import Increase from "./Increase";
+import Decrease from "./Decrease";
+import Logo from "./Logo";
 
 const Icon = ({ name }) => {
   switch (name) {
-    case 'loop':
+    case "loop":
       return <Loop />;
-    case 'metronome':
+    case "metronome":
       return <Metronome />;
-    case 'sheet':
+    case "sheet":
       return <Sheet />;
-    case 'scales':
+    case "scales":
       return <Scales />;
-    case 'exercise':
+    case "exercise":
       return <Exercise />;
-    case 'increase':
+    case "increase":
       return <Increase />;
-    case 'decrease':
+    case "decrease":
       return <Decrease />;
+    case "logo":
+      return <Logo />;
     default:
       return null;
   }
