@@ -24,16 +24,19 @@ const SliderContainer = styled.div`
   transition: 0.45s ease-in-out left;
 `;
 
-const Slider = ({ showSlider }) => {
-  const renderContent = () => {
-    return <Looper />;
-  };
-
-  return (
-    <Container show={showSlider}>
-      <SliderContainer show={showSlider}>{renderContent()}</SliderContainer>
-    </Container>
-  );
+const Slider = ({ showSlider, item }) => {
+  switch (item) {
+    case 'loop':
+      return (
+        <Container show={showSlider}>
+          <SliderContainer show={showSlider}>
+            <Looper />
+          </SliderContainer>
+        </Container>
+      );
+    default:
+      return null;
+  }
 };
 
 export default Slider;

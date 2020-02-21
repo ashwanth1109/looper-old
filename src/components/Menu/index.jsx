@@ -30,9 +30,11 @@ const items = [
 
 const Menu = () => {
   const [showSlider, setShowSlider] = useState(false);
+  const [current, setCurrent] = useState(null);
 
   const handleClick = useCallback(item => {
     setShowSlider(prev => !prev);
+    setCurrent(item);
   }, []);
 
   return (
@@ -48,7 +50,7 @@ const Menu = () => {
           );
         })}
       </MenuOverlay>
-      <Slider showSlider={showSlider} />
+      <Slider showSlider={showSlider} item={current} />
     </Container>
   );
 };

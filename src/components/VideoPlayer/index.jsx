@@ -92,7 +92,7 @@ const VideoPlayer = ({ videoId }) => {
         endSeconds: playerVars.end
       });
     }
-  }, [width, height, playerVars]);
+  }, [width, height, playerVars, videoId]);
 
   return (
     <Container ref={setRef}>
