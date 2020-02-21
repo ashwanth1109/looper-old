@@ -5,7 +5,7 @@ import Looper from './Looper';
 import { rifleGreen } from '../../colors';
 
 const Container = styled.div`
-  width: 200px;
+  width: ${props => (props.show ? '200px' : '0')};
   height: calc((9 / 16) * 100vw);
   max-height: calc(100vh - 200px);
   min-height: 480px;
@@ -30,7 +30,7 @@ const Slider = ({ showSlider }) => {
   };
 
   return (
-    <Container>
+    <Container show={showSlider}>
       <SliderContainer show={showSlider}>{renderContent()}</SliderContainer>
     </Container>
   );
